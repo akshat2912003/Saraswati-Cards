@@ -1,0 +1,324 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =====================================================
+   SARASWATI CARDS — GLOBAL STYLES
+   ===================================================== */
+
+/* Root variables for easy theming */
+:root {
+  --brand-primary: #8B2635;
+  --brand-gold: #C9A84C;
+  --brand-cream: #fdf8f0;
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
+  --text-muted: #888888;
+  --border-light: #e8e0d4;
+  --whatsapp-green: #25D366;
+  --whatsapp-dark: #128C7E;
+}
+
+/* Base resets */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--text-primary);
+  background-color: #FAF7F2;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings use Playfair Display for elegance */
+h1, h2, h3, .font-serif {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* Focus states for accessibility */
+:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* Remove outline for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* =====================================================
+   COMPONENT LAYER
+   ===================================================== */
+
+@layer components {
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 
+           bg-brand-700 text-white font-medium rounded-lg 
+           hover:bg-brand-800 active:scale-95
+           transition-all duration-200 cursor-pointer
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 
+           border border-brand-700 text-brand-700 font-medium rounded-lg 
+           hover:bg-brand-50 active:scale-95
+           transition-all duration-200 cursor-pointer;
+  }
+
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 
+           bg-gold-500 text-white font-medium rounded-lg 
+           hover:bg-gold-600 active:scale-95
+           transition-all duration-200 cursor-pointer;
+  }
+
+  .btn-whatsapp {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 
+           bg-[#25D366] text-white font-semibold rounded-xl 
+           hover:bg-[#20b95a] active:scale-95
+           shadow-md hover:shadow-lg
+           transition-all duration-200 cursor-pointer
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-white rounded-xl shadow-card overflow-hidden
+           transition-shadow duration-200 hover:shadow-card-hover;
+  }
+
+  /* Section heading */
+  .section-heading {
+    @apply text-2xl md:text-3xl font-serif font-semibold text-brand-700;
+  }
+
+  .section-subheading {
+    @apply text-sm md:text-base text-gray-500 mt-1;
+  }
+
+  /* Product badge */
+  .badge {
+    @apply inline-flex items-center text-xs font-semibold px-2 py-0.5 rounded-full;
+  }
+
+  .badge-trending { @apply bg-orange-100 text-orange-700; }
+  .badge-new { @apply bg-green-100 text-green-700; }
+  .badge-premium { @apply bg-purple-100 text-purple-700; }
+  .badge-bestseller { @apply bg-blue-100 text-blue-700; }
+  .badge-sale { @apply bg-red-100 text-red-700; }
+  .badge-featured { @apply bg-gold-100 text-gold-700; }
+  .badge-outofstock { @apply bg-gray-100 text-gray-600; }
+
+  /* Input */
+  .input {
+    @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg 
+           text-sm text-gray-900 bg-white
+           focus:outline-none focus:ring-2 focus:ring-brand-300 focus:border-brand-500
+           placeholder:text-gray-400
+           transition duration-200;
+  }
+
+  /* Page container */
+  .container-page {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Skeleton loader */
+  .skeleton {
+    @apply bg-gray-200 rounded animate-pulse;
+  }
+
+  /* Admin sidebar link */
+  .admin-nav-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 
+           hover:bg-brand-50 hover:text-brand-700
+           transition-colors duration-150 font-medium text-sm;
+  }
+
+  .admin-nav-link.active {
+    @apply bg-brand-700 text-white hover:bg-brand-800 hover:text-white;
+  }
+}
+
+/* =====================================================
+   UTILITY EXTENSIONS
+   ===================================================== */
+
+@layer utilities {
+
+  /* Horizontal scroll snap for category row */
+  .scroll-snap-x {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .scroll-snap-start {
+    scroll-snap-align: start;
+  }
+
+  /* Hide scrollbar but keep scroll */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Line clamp */
+  .line-clamp-1 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; }
+  .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .line-clamp-3 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+
+  /* Image cover */
+  .img-cover { object-fit: cover; width: 100%; height: 100%; }
+}
+
+/* =====================================================
+   SWIPER OVERRIDES
+   ===================================================== */
+
+.swiper-pagination-bullet-active {
+  background: var(--brand-primary) !important;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 1rem !important;
+  color: var(--brand-primary);
+}
+
+/* =====================================================
+   RESPONSIVE PRODUCT GRID
+   ===================================================== */
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 480px) {
+  .product-grid { gap: 16px; }
+}
+
+@media (min-width: 640px) {
+  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+}
+
+@media (min-width: 768px) {
+  .product-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .product-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (min-width: 1280px) {
+  .product-grid { grid-template-columns: repeat(5, 1fr); gap: 24px; }
+}
+
+/* =====================================================
+   MOBILE MENU TRANSITION
+   ===================================================== */
+
+.mobile-menu-overlay {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.mobile-menu-panel {
+  animation: slideInRight 0.3s ease-out;
+}
+
+/* =====================================================
+   SECTION DIVIDER
+   ===================================================== */
+
+.section-divider {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(to right, #8B2635, #C9A84C);
+  border-radius: 2px;
+}
+
+/* =====================================================
+   WHATSAPP FLOATING BUTTON
+   ===================================================== */
+
+.whatsapp-float {
+  position: fixed;
+  bottom: 24px;
+  right: 20px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #25D366;
+  color: white;
+  border-radius: 50px;
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.45);
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.whatsapp-float:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(37, 211, 102, 0.55);
+}
+
+@media (max-width: 480px) {
+  .whatsapp-float {
+    padding: 14px;
+    border-radius: 50%;
+  }
+  .whatsapp-float .whatsapp-label {
+    display: none;
+  }
+}
+
+/* =====================================================
+   BREADCRUMB
+   ===================================================== */
+
+.breadcrumb {
+  @apply flex items-center gap-2 text-sm text-gray-500 flex-wrap;
+}
+
+.breadcrumb a {
+  @apply hover:text-brand-700 transition-colors;
+}
+
+/* =====================================================
+   HERO SWIPER
+   ===================================================== */
+
+.hero-swiper .swiper-pagination {
+  bottom: 16px;
+}
+
+/* =====================================================
+   PRINT / REDUCED MOTION
+   ===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  .no-print { display: none !important; }
+}
