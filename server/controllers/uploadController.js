@@ -20,10 +20,19 @@ const isCloudinaryConfigured = () =>
     process.env.CLOUDINARY_API_SECRET
   );
 
-// ── Local fallback directory ─────────────────────────────────────────────────
-const uploadsDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
+const os = require('os');
+
+// ── Local fallback directory (Serverless safe: uses /tmp on Vercel) ──────────
+const uploadsDir = process.env.VERCEL
+  ? path.join(os.tmpdir(), 'uploads')
+  : path.join(__dirname, '../uploads');
+
+try {
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+} catch (err) {
+  console.warn('⚠️ Safe warning: uploads directory cannot be created at startup:', err.message);
 }
 
 // ── Multer — memory storage so we can pipe to Cloudinary ────────────────────
@@ -85,6 +94,11 @@ const uploadToCloudinary = (fileBuffer, resourceType) => {
 
 // ── Helper: save buffer to local /uploads/ as fallback ──────────────────────
 const saveLocally = (fileBuffer, originalName) => {
+  try {
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+  } catch (_) {}
   const ext = path.extname(originalName) || '.jpg';
   const uniqueName = `img-${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
   const filePath = path.join(uploadsDir, uniqueName);
