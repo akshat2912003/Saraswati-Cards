@@ -92,17 +92,23 @@ const AllProductsPage = () => {
           <Breadcrumb items={[{ label: 'All Products' }]} />
 
           {/* Header */}
-          <div className="my-6">
-            <h1 className="text-2xl sm:text-3xl font-serif font-bold text-gray-900">
-              {isTrending ? 'Trending Card Designs' : isNew ? 'New Arrivals' : 'All Product Catalog'}
-            </h1>
-            <p className="text-xs sm:text-sm text-gray-500 mt-1">
-              Explore our full collection of invitation cards and commercial printing products
-            </p>
+          <div className="my-6 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-serif font-bold text-gray-900">
+                {isTrending ? 'Trending Card Designs' : isNew ? 'New Arrivals' : 'All Product Catalog'}
+              </h1>
+              <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                Explore our full collection of invitation cards and commercial printing products
+              </p>
+            </div>
+            {/* Product count on desktop right */}
+            <span className="hidden lg:block text-sm text-gray-500 font-medium shrink-0">
+              Showing <span className="font-semibold text-gray-800">{products.length}</span> of {totalProducts} items
+            </span>
           </div>
 
           {/* Search Bar */}
-          <div className="mb-6 max-w-xl">
+          <div className="mb-5 max-w-xl lg:max-w-2xl">
             <SearchBar
               value={search}
               onChange={(val) => setSearch(val)}
@@ -111,8 +117,8 @@ const AllProductsPage = () => {
             />
           </div>
 
-          {/* Filters and Sort Row */}
-          <div className="bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+          {/* Filters Row */}
+          <div className="bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
               <select
                 value={selectedCategory}
@@ -138,7 +144,8 @@ const AllProductsPage = () => {
               </select>
             </div>
 
-            <div className="text-xs sm:text-sm text-gray-500 font-medium self-end sm:self-center">
+            {/* Product count — visible on mobile only (desktop shows above) */}
+            <div className="text-xs sm:text-sm text-gray-500 font-medium self-end sm:self-center lg:hidden">
               Showing <span className="font-semibold text-gray-800">{products.length}</span> of {totalProducts} items
             </div>
           </div>
@@ -175,6 +182,7 @@ const AllProductsPage = () => {
           )}
         </div>
       </div>
+
     </>
   )
 }

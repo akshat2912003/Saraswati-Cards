@@ -31,22 +31,19 @@ const Header = () => {
   return (
     <>
       <header className="sticky top-0 z-40 bg-[#FAF7F2] border-b border-gray-200/60 shadow-xs">
-        <div className="container-page py-3 px-4 flex items-center justify-between">
-          
-          {/* Left: Mobile Hamburger */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setIsMobileMenuOpen(true)}
-              className="p-1.5 text-gray-800 hover:text-brand-700 focus:outline-none"
-              aria-label="Open Mobile Menu"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
 
-          {/* Center: Saraswati Cards Logo & Tagline */}
+        {/* ── Mobile top bar (visible below lg) ── */}
+        <div className="lg:hidden container-page py-3 px-4 flex items-center justify-between">
+          <button
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="p-1.5 text-gray-800 hover:text-[#5C1622] focus:outline-none"
+            aria-label="Open Mobile Menu"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+
           <Link to="/" className="flex flex-col items-center text-center">
             <span className="font-serif text-xl sm:text-2xl font-bold text-[#5C1622] tracking-tight leading-none">
               Saraswati Cards
@@ -56,36 +53,36 @@ const Header = () => {
             </span>
           </Link>
 
-          {/* Right: WhatsApp */}
-          <div className="flex items-center gap-2">
-            <Link
-              to="/custom-design"
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#D49E43]/50 bg-[#D49E43]/10 px-2.5 py-2 text-[#5C1622] transition-colors hover:bg-[#D49E43]/20 sm:px-3"
-              aria-label="Request a custom design"
-            >
-              <HiSparkles className="text-lg" />
-              <span className="hidden text-xs font-semibold sm:inline">Custom Design</span>
-            </Link>
-            <a
-              href={buildWhatsAppUrl(buildGeneralWhatsAppMessage())}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#25D366] hover:scale-110 transition-transform p-1"
-              aria-label="WhatsApp"
-            >
-              <FaWhatsapp className="text-2xl" />
-            </a>
-          </div>
+          <a
+            href={buildWhatsAppUrl(buildGeneralWhatsAppMessage())}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#25D366] p-1"
+            aria-label="WhatsApp"
+          >
+            <FaWhatsapp className="text-2xl" />
+          </a>
         </div>
 
-        {/* Desktop Navbar Row */}
-        <nav className="hidden lg:block border-t border-gray-200/50 bg-[#FAF7F2]">
-          <div className="container-page flex items-center justify-center gap-6 py-2 overflow-x-auto text-xs font-medium">
+        {/* ── Desktop top bar (visible lg+) ── */}
+        <div className="hidden lg:flex container-page py-3 px-8 items-center justify-between gap-4">
+          {/* Logo — left */}
+          <Link to="/" className="flex flex-col items-start shrink-0">
+            <span className="font-serif text-2xl font-bold text-[#5C1622] tracking-tight leading-none">
+              Saraswati Cards
+            </span>
+            <span className="text-[10px] font-sans font-medium uppercase tracking-[0.2em] text-[#8C6D46] mt-0.5">
+              CARDS FOR EVERY OCCASION
+            </span>
+          </Link>
+
+          {/* Nav — center */}
+          <nav className="flex items-center gap-5 xl:gap-7 text-sm font-medium flex-1 justify-center flex-wrap">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
-                className={`py-1 transition-colors ${
+                className={`py-1 whitespace-nowrap transition-colors ${
                   isActive(link.href)
                     ? 'text-[#5C1622] font-bold border-b-2 border-[#5C1622]'
                     : 'text-gray-700 hover:text-[#5C1622]'
@@ -94,14 +91,35 @@ const Header = () => {
                 {link.label}
               </Link>
             ))}
+          </nav>
+
+          {/* Actions — right */}
+          <div className="flex items-center gap-3 shrink-0">
+            <Link
+              to="/custom-design"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#D49E43]/60 bg-[#D49E43]/10 px-3 py-2 text-[#5C1622] text-xs font-semibold hover:bg-[#D49E43]/20 transition-colors"
+            >
+              <HiSparkles className="text-base" />
+              Custom Design
+            </Link>
+            <a
+              href={buildWhatsAppUrl(buildGeneralWhatsAppMessage())}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-[#1D9A52] hover:bg-[#178946] text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors"
+            >
+              <FaWhatsapp className="text-base" />
+              Order on WhatsApp
+            </a>
           </div>
-        </nav>
+        </div>
       </header>
 
       {/* Mobile Navigation Drawer */}
       <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
     </>
   )
+
 }
 
 export default Header

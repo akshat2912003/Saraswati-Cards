@@ -191,7 +191,7 @@ const ProductDetailPage = () => {
       <div className="bg-[#FAF7F2] min-h-screen">
 
         {/* ── Breadcrumb ─────────────────────────────────────── */}
-        <div className="px-4 pt-4 pb-2 text-xs text-gray-500">
+        <div className="container-page pt-4 pb-2 text-xs text-gray-500">
           <Link to="/" className="hover:text-[#5C1622]">Home</Link>
           {' / '}
           {product.category && (
@@ -205,10 +205,11 @@ const ProductDetailPage = () => {
           <span className="text-gray-700 font-medium">{product.name}</span>
         </div>
 
-        <div className="px-4 pb-4 max-w-2xl mx-auto lg:max-w-5xl">
+        <div className="container-page pb-8 lg:max-w-6xl">
 
           {/* ── DESKTOP: Side-by-side / Mobile: Stacked ────── */}
-          <div className="lg:grid lg:grid-cols-2 lg:gap-10 lg:items-start">
+          <div className="lg:grid lg:grid-cols-2 lg:gap-12 lg:items-start">
+
 
             {/* ── LEFT: Image Gallery ──────────────────────── */}
             <div>

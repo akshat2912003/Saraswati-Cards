@@ -218,12 +218,13 @@ h1, h2, h3, .font-serif {
 }
 
 @media (min-width: 1024px) {
-  .product-grid { grid-template-columns: repeat(4, 1fr); }
+  .product-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
 }
 
-@media (min-width: 1280px) {
-  .product-grid { grid-template-columns: repeat(5, 1fr); gap: 24px; }
+@media (min-width: 1536px) {
+  .product-grid { grid-template-columns: repeat(5, 1fr); gap: 28px; }
 }
+
 
 /* =====================================================
    MOBILE MENU TRANSITION
