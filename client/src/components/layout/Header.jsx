@@ -53,15 +53,26 @@ const Header = () => {
             </span>
           </Link>
 
-          <a
-            href={buildWhatsAppUrl(buildGeneralWhatsAppMessage())}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#25D366] p-1"
-            aria-label="WhatsApp"
-          >
-            <FaWhatsapp className="text-2xl" />
-          </a>
+          <div className="flex items-center gap-2">
+            <Link
+              to="/custom-design"
+              className="p-2 rounded-full border border-[#D49E43]/60 bg-[#D49E43]/10 text-[#5C1622] hover:bg-[#D49E43]/20 transition-colors flex items-center justify-center"
+              aria-label="Request a custom design"
+              title="Custom Design"
+            >
+              <HiSparkles className="text-lg text-[#5C1622]" />
+            </Link>
+
+            <a
+              href={buildWhatsAppUrl(buildGeneralWhatsAppMessage())}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#25D366] p-1 flex items-center"
+              aria-label="WhatsApp"
+            >
+              <FaWhatsapp className="text-2xl" />
+            </a>
+          </div>
         </div>
 
         {/* ── Desktop top bar (visible lg+) ── */}
