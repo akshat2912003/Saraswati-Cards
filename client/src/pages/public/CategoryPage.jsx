@@ -8,13 +8,13 @@ import ProductGrid from '../../components/product/ProductGrid'
 import { productAPI, categoryAPI } from '../../services/api'
 
 const categoryBanners = {
-  'wedding-cards': '/images/wed_page_banner.png',
-  'digital-wedding-cards': '/images/digital_page_banner.png',
-  'video-wedding-cards': '/images/video_page_banner.png',
-  'birthday-cards': '/images/Birthday_page_banner.png',
-  'welcome-boards': '/images/Welcome_board_page_banner.png',
-  'gift-envelopes': '/images/Gift_enevlope_page_banner.png',
-  'visiting-cards': '/images/Visitng_page_banner.png',
+  'wedding-cards': '/images/wed_page_banner.jpeg',
+  'digital-wedding-cards': '/images/digital_page_banner.jpeg',
+  'video-wedding-cards': '/images/video_page_banner.jpeg',
+  'birthday-cards': '/images/Birthday_page_banner.jpeg',
+  'welcome-boards': '/images/Welcome_board_page_banner.jpeg',
+  'gift-envelopes': '/images/Gift_enevlope_page_banner.jpeg',
+  'visiting-cards': '/images/Visitng_page_banner.jpeg',
 }
 
 const CategoryPage = () => {

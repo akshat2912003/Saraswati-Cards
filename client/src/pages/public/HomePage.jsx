@@ -45,13 +45,13 @@ const HomePage = () => {
 
   // These supplied category images already include their category labels.
   const categoryImages = {
-    'wedding-cards': '/images/wed_category.png',
-    'digital-wedding-cards': '/images/digital_category.png',
-    'video-wedding-cards': '/images/video_category.png',
-    'birthday-cards': '/images/birthday_category.png',
-    'welcome-boards': '/images/welcomeboard_category.png',
-    'gift-envelopes': '/images/Gift_enve_category.png',
-    'visiting-cards': '/images/visiting_category.png',
+    'wedding-cards': '/images/wed_category.jpeg',
+    'digital-wedding-cards': '/images/digital_category.jpeg',
+    'video-wedding-cards': '/images/video_category.jpeg',
+    'birthday-cards': '/images/birthday_category.jpeg',
+    'welcome-boards': '/images/welcomeboard_category.jpeg',
+    'gift-envelopes': '/images/Gift_enve_category.jpeg',
+    'visiting-cards': '/images/visiting_category.jpeg',
   }
 
   // Trust features matching screenshot 3
