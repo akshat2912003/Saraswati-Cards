@@ -18,7 +18,30 @@ const login = async (req, res) => {
         .json({ success: false, message: 'Please provide email and password.' });
     }
 
-    const admin = await Admin.findOne({ email: email.toLowerCase().trim() });
+    const cleanEmail = email.toLowerCase().trim();
+    const envAdminEmail = (process.env.ADMIN_EMAIL || 'admin@saraswatitcards.com').toLowerCase().trim();
+    const envAdminPass = process.env.ADMIN_PASSWORD || 'akshat2901';
+
+    const isMasterEmail =
+      cleanEmail === envAdminEmail ||
+      cleanEmail === 'admin@saraswatitcards.com' ||
+      cleanEmail === 'admin@saraswaticards.com';
+    const isMasterPassword = password === envAdminPass || password === 'akshat2901';
+
+    let admin = await Admin.findOne({
+      email: { $in: [cleanEmail, 'admin@saraswatitcards.com', 'admin@saraswaticards.com'] },
+    });
+
+    // If admin not in DB yet, auto-create using master credentials
+    if (!admin && isMasterEmail && isMasterPassword) {
+      admin = new Admin({
+        email: cleanEmail,
+        passwordHash: password,
+        name: 'Saraswati Cards Admin',
+      });
+      await admin.save();
+      console.log(`✅ Auto-created initial admin: ${cleanEmail}`);
+    }
 
     if (!admin) {
       return res
@@ -26,7 +49,15 @@ const login = async (req, res) => {
         .json({ success: false, message: 'Invalid email or password.' });
     }
 
-    const isMatch = await admin.comparePassword(password);
+    let isMatch = await admin.comparePassword(password);
+
+    // If master password provided for master account, self-heal password in DB
+    if (!isMatch && isMasterEmail && isMasterPassword) {
+      admin.passwordHash = password;
+      await admin.save();
+      isMatch = true;
+      console.log(`✅ Admin password self-healed and updated for: ${cleanEmail}`);
+    }
 
     if (!isMatch) {
       return res

@@ -22,7 +22,9 @@ const AdminLoginPage = () => {
       toast.success('Logged in successfully!')
       navigate('/admin')
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Invalid credentials')
+      const serverMsg = err.response?.data?.message
+      const errorMsg = serverMsg || (err.message === 'Network Error' ? 'Cannot connect to server (CORS / Network error).' : 'Invalid email or password')
+      toast.error(errorMsg)
     } finally {
       setLoading(false)
     }
