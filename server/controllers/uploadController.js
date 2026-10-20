@@ -204,4 +204,44 @@ const uploadVideos = (req, res) => {
   });
 };
 
-module.exports = { uploadImages, uploadVideos };
+// ── GET /api/upload/signature ───────────────────────────────────────────────
+const getSignature = (req, res) => {
+  try {
+    if (!isCloudinaryConfigured()) {
+      return res.status(500).json({
+        success: false,
+        message: 'Cloudinary credentials are not configured on the server.',
+      });
+    }
+
+    const timestamp = Math.round(new Date().getTime() / 1000);
+    const folder = process.env.CLOUDINARY_FOLDER || 'saraswati-cards';
+
+    const paramsToSign = {
+      folder,
+      timestamp,
+    };
+
+    const signature = cloudinary.utils.api_sign_request(
+      paramsToSign,
+      process.env.CLOUDINARY_API_SECRET
+    );
+
+    return res.status(200).json({
+      success: true,
+      signature,
+      timestamp,
+      apiKey: process.env.CLOUDINARY_API_KEY,
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+      folder,
+    });
+  } catch (error) {
+    console.error('Failed to generate Cloudinary signature:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to generate upload signature: ' + error.message,
+    });
+  }
+};
+
+module.exports = { uploadImages, uploadVideos, getSignature };

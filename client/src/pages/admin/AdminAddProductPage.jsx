@@ -23,14 +23,16 @@ const AdminAddProductPage = () => {
   const [isTrending, setIsTrending] = useState(false)
   const [isNew, setIsNew] = useState(true)
 
-  // Image files state
+  // Image & video files state
   const [imageFiles, setImageFiles] = useState([])
   const [imagePreviews, setImagePreviews] = useState([])
   const [imageUrlsInput, setImageUrlsInput] = useState('')
   const [videoFiles, setVideoFiles] = useState([])
   const [videoPreviews, setVideoPreviews] = useState([])
+  const [videoUrlsInput, setVideoUrlsInput] = useState('')
 
   const [loading, setLoading] = useState(false)
+  const [uploadStatus, setUploadStatus] = useState('')
 
   // Fetch categories for select dropdown
   const { data: categoriesData } = useQuery({
@@ -102,7 +104,9 @@ const AdminAddProductPage = () => {
     if (!name.trim()) return toast.error('Product name is required')
     if (!category) return toast.error('Please select a category')
     if (!price || isNaN(price)) return toast.error('Valid price is required')
-    if (isVideoCategory && videoFiles.length === 0) return toast.error('Please upload at least one video')
+    if (isVideoCategory && videoFiles.length === 0 && !videoUrlsInput.trim()) {
+      return toast.error('Please upload at least one video or enter a video URL')
+    }
 
     setLoading(true)
 
@@ -111,10 +115,20 @@ const AdminAddProductPage = () => {
       let finalVideos = []
 
       if (isVideoCategory) {
-        const formData = new FormData()
-        videoFiles.forEach((file) => formData.append('videos', file))
-        const uploadRes = await uploadAPI.uploadVideos(formData)
-        finalVideos = uploadRes.data.videos
+        if (videoUrlsInput.trim()) {
+          const urls = videoUrlsInput.split(',').map((u) => u.trim()).filter(Boolean)
+          finalVideos.push(...urls)
+        }
+
+        if (videoFiles.length > 0) {
+          setUploadStatus('Uploading invitation video to Cloudinary...')
+          const uploadRes = await uploadAPI.uploadVideos(videoFiles, (percent) => {
+            setUploadStatus(`Uploading video (${percent}%)...`)
+          })
+          if (uploadRes.data?.videos) {
+            finalVideos.push(...uploadRes.data.videos)
+          }
+        }
       } else {
         // Add direct URL inputs if provided (comma separated)
         if (imageUrlsInput.trim()) {
@@ -124,11 +138,11 @@ const AdminAddProductPage = () => {
 
         // Upload file images if selected
         if (imageFiles.length > 0) {
-          const formData = new FormData()
-          imageFiles.forEach((file) => formData.append('images', file))
-
-          const uploadRes = await uploadAPI.uploadImages(formData)
-          if (uploadRes.data.success) {
+          setUploadStatus('Uploading images...')
+          const uploadRes = await uploadAPI.uploadImages(imageFiles, (percent) => {
+            setUploadStatus(`Uploading images (${percent}%)...`)
+          })
+          if (uploadRes.data?.success && uploadRes.data?.images) {
             finalImages.push(...uploadRes.data.images)
           }
         }
@@ -157,9 +171,10 @@ const AdminAddProductPage = () => {
       toast.success('Product created successfully!')
       navigate('/admin/products')
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to create product')
+      toast.error(err.response?.data?.message || err.message || 'Failed to create product')
     } finally {
       setLoading(false)
+      setUploadStatus('')
     }
   }
 
@@ -329,6 +344,17 @@ const AdminAddProductPage = () => {
                       ))}
                     </div>
                   )}
+
+                  {/* URL fallback input */}
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      value={videoUrlsInput}
+                      onChange={(e) => setVideoUrlsInput(e.target.value)}
+                      placeholder="Or paste video URLs (comma separated, e.g. https://res.cloudinary.com/...)"
+                      className="input text-xs"
+                    />
+                  </div>
                 </>
               ) : (
                 <>
@@ -464,6 +490,14 @@ const AdminAddProductPage = () => {
               </div>
             </div>
 
+            {/* Upload status indicator */}
+            {uploadStatus && (
+              <div className="p-3 bg-brand-50 border border-brand-200 rounded-xl text-brand-800 text-xs font-medium flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-brand-600 animate-ping"></span>
+                <span>{uploadStatus}</span>
+              </div>
+            )}
+
             {/* Submit */}
             <div className="flex gap-3 justify-end pt-4 border-t border-gray-100">
               <button
@@ -478,7 +512,7 @@ const AdminAddProductPage = () => {
                 disabled={loading}
                 className="btn-primary text-xs py-2.5 px-6"
               >
-                {loading ? 'Saving Product...' : 'Save Product'}
+                {loading ? (uploadStatus || 'Saving Product...') : 'Save Product'}
               </button>
             </div>
           </form>

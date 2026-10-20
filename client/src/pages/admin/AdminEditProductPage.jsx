@@ -31,7 +31,9 @@ const AdminEditProductPage = () => {
   const [existingVideos, setExistingVideos] = useState([])
   const [videoFiles, setVideoFiles] = useState([])
   const [videoPreviews, setVideoPreviews] = useState([])
+  const [videoUrlsInput, setVideoUrlsInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [uploadStatus, setUploadStatus] = useState('')
 
   // Fetch product details
   const { data: product, isLoading: productLoading } = useQuery({
@@ -141,8 +143,12 @@ const AdminEditProductPage = () => {
     if (!name.trim()) return toast.error('Product name is required')
     if (!category) return toast.error('Please select a category')
     if (!price || isNaN(price)) return toast.error('Valid price is required')
-    if (isVideoCategory && existingVideos.length + videoFiles.length === 0) {
-      return toast.error('Please keep or upload at least one invitation video')
+    if (
+      isVideoCategory &&
+      existingVideos.length + videoFiles.length === 0 &&
+      !videoUrlsInput.trim()
+    ) {
+      return toast.error('Please keep, upload, or enter at least one invitation video')
     }
 
     setLoading(true)
@@ -153,11 +159,18 @@ const AdminEditProductPage = () => {
 
       if (isVideoCategory) {
         finalVideos = [...existingVideos]
+        if (videoUrlsInput.trim()) {
+          const urls = videoUrlsInput.split(',').map((u) => u.trim()).filter(Boolean)
+          finalVideos.push(...urls)
+        }
         if (videoFiles.length > 0) {
-          const formData = new FormData()
-          videoFiles.forEach((file) => formData.append('videos', file))
-          const uploadRes = await uploadAPI.uploadVideos(formData)
-          finalVideos.push(...uploadRes.data.videos)
+          setUploadStatus('Uploading invitation video to Cloudinary...')
+          const uploadRes = await uploadAPI.uploadVideos(videoFiles, (percent) => {
+            setUploadStatus(`Uploading video (${percent}%)...`)
+          })
+          if (uploadRes.data?.videos) {
+            finalVideos.push(...uploadRes.data.videos)
+          }
         }
       } else {
         finalImages = [...existingImages]
@@ -167,10 +180,11 @@ const AdminEditProductPage = () => {
         }
 
         if (imageFiles.length > 0) {
-          const formData = new FormData()
-          imageFiles.forEach((file) => formData.append('images', file))
-          const uploadRes = await uploadAPI.uploadImages(formData)
-          if (uploadRes.data.success) {
+          setUploadStatus('Uploading images...')
+          const uploadRes = await uploadAPI.uploadImages(imageFiles, (percent) => {
+            setUploadStatus(`Uploading images (${percent}%)...`)
+          })
+          if (uploadRes.data?.success && uploadRes.data?.images) {
             finalImages.push(...uploadRes.data.images)
           }
         }
@@ -199,9 +213,10 @@ const AdminEditProductPage = () => {
       toast.success('Product updated successfully!')
       navigate('/admin/products')
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to update product')
+      toast.error(err.response?.data?.message || err.message || 'Failed to update product')
     } finally {
       setLoading(false)
+      setUploadStatus('')
     }
   }
 
@@ -390,6 +405,17 @@ const AdminEditProductPage = () => {
                       ))}
                     </div>
                   )}
+
+                  {/* URL fallback input */}
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      value={videoUrlsInput}
+                      onChange={(e) => setVideoUrlsInput(e.target.value)}
+                      placeholder="Or paste video URLs (comma separated, e.g. https://res.cloudinary.com/...)"
+                      className="input text-xs"
+                    />
+                  </div>
                 </>
               ) : (
                 <>
@@ -526,6 +552,14 @@ const AdminEditProductPage = () => {
               </div>
             </div>
 
+            {/* Upload status indicator */}
+            {uploadStatus && (
+              <div className="p-3 bg-brand-50 border border-brand-200 rounded-xl text-brand-800 text-xs font-medium flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-brand-600 animate-ping"></span>
+                <span>{uploadStatus}</span>
+              </div>
+            )}
+
             {/* Submit */}
             <div className="flex gap-3 justify-end pt-4 border-t border-gray-100">
               <button
@@ -540,7 +574,7 @@ const AdminEditProductPage = () => {
                 disabled={loading}
                 className="btn-primary text-xs py-2.5 px-6"
               >
-                {loading ? 'Updating Product...' : 'Update Product'}
+                {loading ? (uploadStatus || 'Updating Product...') : 'Update Product'}
               </button>
             </div>
           </form>
